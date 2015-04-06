@@ -1,7 +1,7 @@
 # About this Repo
 
 This is the git repo based on the official Docker image for [nginx](https://registry.hub.docker.com/_/nginx/) but 
-includes the **--with-debug** option. See the
+includes the **--with-debug** build config option. See the
 Hub page for the full readme on how to use the Docker image and for information
 regarding contributing and issues.
 
