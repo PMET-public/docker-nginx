@@ -50,9 +50,13 @@ RUN apt-get update && \
     --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
     --with-ipv6 && \
   make && \
-  apt-get --purge autoremove -y && \
+  cp /tmp/nginx-1.7.11/objs/nginx /usr/sbin/nginx && \
+  useradd nginx && \
+  apt-get --purge autoremove build-essential libpcre3-dev libssl-dev -y && \
   apt-get clean && \
   rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
+
+COPY nginx /etc/nginx/
 
 # forward request and error logs to docker log collector
 RUN mkdir /var/log/nginx/ && \
