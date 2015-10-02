@@ -4,15 +4,15 @@ MAINTAINER Keith Bentrup <kbentrup@ebay.com>
 # reference: https://github.com/nginxinc/docker-nginx
 # compile options from "docker run nginx nginx -V"
 
-ADD http://nginx.org/download/nginx-1.7.11.tar.gz /tmp/
+ADD http://nginx.org/download/nginx-1.9.5.tar.gz /tmp/
 
-ENV NGINX_VERSION 1.7.11-1~wheezy
+ENV NGINX_VERSION 1.9.5-1~jessie
 
 RUN apt-get update && \
   apt-get install -y build-essential libpcre3 libpcre3-dev zlib1g-dev ca-certificates libssl-dev && \
   cd /tmp && \
-  tar -zxf nginx-1.7.11.tar.gz && \
-  cd nginx-1.7.11 && \
+  tar -zxf nginx-1.9.5.tar.gz && \
+  cd nginx-1.9.5 && \
   ./configure \
     --with-debug \
     --prefix=/etc/nginx \
@@ -45,12 +45,12 @@ RUN apt-get update && \
     --with-mail \
     --with-mail_ssl_module \
     --with-file-aio \
-    --with-http_spdy_module \
+    --with-http_v2_module \
     --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
     --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
     --with-ipv6 && \
   make && \
-  cp /tmp/nginx-1.7.11/objs/nginx /usr/sbin/nginx && \
+  cp /tmp/nginx-1.9.5/objs/nginx /usr/sbin/nginx && \
   useradd nginx && \
   apt-get --purge autoremove build-essential libpcre3-dev libssl-dev -y && \
   apt-get clean && \
