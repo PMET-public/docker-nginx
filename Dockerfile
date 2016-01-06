@@ -20,6 +20,7 @@ RUN apt-get update && \
   tar -zxf nginx-1.9.9.tar.gz && \
   cd nginx-1.9.9 && \
   ./configure \
+    --with-debug \
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
