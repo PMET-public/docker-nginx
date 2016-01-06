@@ -1,20 +1,25 @@
-FROM debian:wheezy
+FROM debian:jessie
 MAINTAINER Keith Bentrup <kbentrup@ebay.com>
 
 # reference: https://github.com/nginxinc/docker-nginx
 # compile options from "docker run nginx nginx -V"
 
-ADD http://nginx.org/download/nginx-1.9.5.tar.gz /tmp/
+ADD http://nginx.org/download/nginx-1.9.9.tar.gz /tmp/
 
-ENV NGINX_VERSION 1.9.5-1~jessie
+ENV NGINX_VERSION 1.9.9~jessie
 
 RUN apt-get update && \
-  apt-get install -y build-essential libpcre3 libpcre3-dev zlib1g-dev ca-certificates libssl-dev && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes build-essential \
+    libpcre3 \
+    libpcre3-dev \
+    zlib1g-dev \
+    ca-certificates \
+    libssl-dev \
+    libgd2-xpm-dev && \
   cd /tmp && \
-  tar -zxf nginx-1.9.5.tar.gz && \
-  cd nginx-1.9.5 && \
+  tar -zxf nginx-1.9.9.tar.gz && \
+  cd nginx-1.9.9 && \
   ./configure \
-    --with-debug \
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
@@ -42,6 +47,7 @@ RUN apt-get update && \
     --with-http_secure_link_module \
     --with-http_stub_status_module \
     --with-http_auth_request_module \
+    --with-http_image_filter_module \
     --with-mail \
     --with-mail_ssl_module \
     --with-file-aio \
@@ -50,9 +56,11 @@ RUN apt-get update && \
     --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
     --with-ipv6 && \
   make && \
-  cp /tmp/nginx-1.9.5/objs/nginx /usr/sbin/nginx && \
+  cp /tmp/nginx-1.9.9/objs/nginx /usr/sbin/nginx && \
   useradd nginx && \
-  apt-get --purge autoremove build-essential libpcre3-dev libssl-dev -y && \
+  apt-get --purge autoremove -y build-essential \
+    libpcre3-dev \
+    libssl-dev && \
   apt-get clean && \
   rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
