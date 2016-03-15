@@ -1,13 +1,14 @@
 FROM debian:jessie
-MAINTAINER Keith Bentrup <kbentrup@ebay.com>
+MAINTAINER Keith Bentrup <kbentrup@magento.com>
 
 # reference: https://github.com/nginxinc/docker-nginx
 # compile options from "docker run nginx nginx -V"
 
-ADD http://nginx.org/download/nginx-1.9.9.tar.gz /tmp/
+ADD http://nginx.org/download/nginx-1.9.12.tar.gz /tmp/
 
-ENV NGINX_VERSION 1.9.9~jessie
+ENV NGINX_VERSION 1.9.12~jessie
 
+# mostly default options but with image filter
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes build-essential \
     libpcre3 \
@@ -15,10 +16,11 @@ RUN apt-get update && \
     zlib1g-dev \
     ca-certificates \
     libssl-dev \
+    zip \
     libgd2-xpm-dev && \
   cd /tmp && \
-  tar -zxf nginx-1.9.9.tar.gz && \
-  cd nginx-1.9.9 && \
+  tar -zxf nginx-1.9.12.tar.gz && \
+  cd nginx-1.9.12 && \
   ./configure \
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
@@ -56,7 +58,7 @@ RUN apt-get update && \
     --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
     --with-ipv6 && \
   make && \
-  cp /tmp/nginx-1.9.9/objs/nginx /usr/sbin/nginx && \
+  cp /tmp/nginx-1.9.12/objs/nginx /usr/sbin/nginx && \
   useradd nginx && \
   apt-get --purge autoremove -y build-essential \
     libpcre3-dev \
