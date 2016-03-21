@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM esepublic/baseimage:0.9.18
 MAINTAINER Keith Bentrup <kbentrup@magento.com>
 
 # reference: https://github.com/nginxinc/docker-nginx
@@ -6,7 +6,7 @@ MAINTAINER Keith Bentrup <kbentrup@magento.com>
 
 ADD http://nginx.org/download/nginx-1.9.12.tar.gz /tmp/
 
-ENV NGINX_VERSION 1.9.12~jessie
+ENV NGINX_VERSION 1.9.12
 
 # mostly default options but with image filter
 RUN apt-get update && \
@@ -67,6 +67,7 @@ RUN apt-get update && \
   rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
 COPY nginx /etc/nginx/
+COPY nginx.sh /etc/service/nginx/run
 
 # forward request and error logs to docker log collector
 RUN mkdir /var/log/nginx/ && \
@@ -76,5 +77,3 @@ RUN mkdir /var/log/nginx/ && \
 VOLUME ["/var/cache/nginx"]
 
 EXPOSE 80 443
-
-CMD ["nginx", "-g", "daemon off;"]
