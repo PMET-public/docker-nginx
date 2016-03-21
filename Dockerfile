@@ -4,8 +4,6 @@ MAINTAINER Keith Bentrup <kbentrup@magento.com>
 # reference: https://github.com/nginxinc/docker-nginx
 # compile options from "docker run nginx nginx -V"
 
-ADD http://nginx.org/download/nginx-1.9.12.tar.gz /tmp/
-
 ENV NGINX_VERSION 1.9.12
 
 # mostly default options but with image filter
@@ -19,6 +17,7 @@ RUN apt-get update && \
     zip \
     libgd2-xpm-dev && \
   cd /tmp && \
+  curl -O http://nginx.org/download/nginx-1.9.12.tar.gz && \
   tar -zxf nginx-1.9.12.tar.gz && \
   cd nginx-1.9.12 && \
   ./configure \
