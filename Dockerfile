@@ -1,14 +1,18 @@
-FROM esepublic/baseimage:0.9.18
+FROM debian:latest
 MAINTAINER Keith Bentrup <kbentrup@magento.com>
 
 # reference: https://github.com/nginxinc/docker-nginx
 # compile options from "docker run nginx nginx -V"
 
-ENV NGINX_VERSION 1.9.12
+ENV NGINX_VERSION 1.10.0
 
 # mostly default options but with image filter
+# note: can't remove all build dependencies (cf. apt-get install vs autoremove). some needed even after build.
 RUN apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes build-essential \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes curl \
+    install-info \
+    gnupg \
+    build-essential \
     libpcre3 \
     libpcre3-dev \
     zlib1g-dev \
@@ -17,9 +21,9 @@ RUN apt-get update && \
     zip \
     libgd2-xpm-dev && \
   cd /tmp && \
-  curl -O http://nginx.org/download/nginx-1.9.12.tar.gz && \
-  tar -zxf nginx-1.9.12.tar.gz && \
-  cd nginx-1.9.12 && \
+  curl -O http://nginx.org/download/nginx-1.10.0.tar.gz && \
+  tar -zxf nginx-1.10.0.tar.gz && \
+  cd nginx-1.10.0 && \
   ./configure \
     --with-debug \
     --prefix=/etc/nginx \
@@ -58,22 +62,28 @@ RUN apt-get update && \
     --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
     --with-ipv6 && \
   make && \
-  cp /tmp/nginx-1.9.12/objs/nginx /usr/sbin/nginx && \
+  cp /tmp/nginx-1.10.0/objs/nginx /usr/sbin/nginx && \
   useradd nginx && \
-  apt-get --purge autoremove -y build-essential \
+  apt-get --purge autoremove -y --force-yes curl \
+    install-info \
+    build-essential \
     libpcre3-dev \
-    libssl-dev && \
+    ca-certificates \
+    libssl-dev \
+    zip && \
   apt-get clean && \
   rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
-COPY nginx /etc/nginx/
-COPY nginx.sh /etc/service/nginx/run
+COPY nginx /etc/nginx/  
 
 # forward request and error logs to docker log collector
-RUN mkdir /var/log/nginx/ && \
+RUN mkdir -p /etc/nginx/conf.d /var/log/nginx && \
   ln -sf /dev/stdout /var/log/nginx/access.log && \
   ln -sf /dev/stderr /var/log/nginx/error.log
 
 VOLUME ["/var/cache/nginx"]
 
 EXPOSE 80 443
+
+CMD sed -n 's/nameserver\(.*\)/resolver\1;/p' /etc/resolv.conf | head -1 > /etc/nginx/conf.d/resolver.conf && /usr/sbin/nginx -g "daemon off;"
+
