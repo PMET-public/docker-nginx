@@ -1,11 +1,7 @@
 version: '2'
 services:
 
-  app:
+  nginx:
     build: 
       context: .
-      args:
-        - constraint:node==dv-vm1
-    image: esepublic/nginx
-    environment:
-      - constraint:node==/dv-vm1/
+    image: esepublic/nginx:1.10.0
