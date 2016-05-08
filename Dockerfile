@@ -84,6 +84,6 @@ RUN mkdir -p /etc/nginx/conf.d /var/log/nginx && \
 
 VOLUME ["/var/cache/nginx"]
 
-EXPOSE 80 443
-
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+EXPOSE 80 443
