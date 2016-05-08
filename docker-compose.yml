@@ -1,7 +1,0 @@
-version: '2'
-services:
-
-  nginx:
-    build: 
-      context: .
-    image: esepublic/nginx:1.10.0
