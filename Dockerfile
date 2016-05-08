@@ -73,7 +73,8 @@ RUN apt-get update && \
   apt-get clean && \
   rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
-COPY nginx /etc/nginx/  
+COPY nginx /etc/nginx/
+COPY docker-entrypoint.sh /
 
 # forward request and error logs to docker log collector
 RUN mkdir -p /etc/nginx/conf.d /var/log/nginx && \
@@ -84,5 +85,4 @@ VOLUME ["/var/cache/nginx"]
 
 EXPOSE 80 443
 
-CMD sed -n 's/nameserver\(.*\)/resolver\1;/p' /etc/resolv.conf | head -1 > /etc/nginx/conf.d/resolver.conf && /usr/sbin/nginx -g "daemon off;"
-
+ENTRYPOINT ["/docker-entrypoint.sh"]
