@@ -25,7 +25,6 @@ RUN apt-get update && \
   tar -zxf nginx-1.10.0.tar.gz && \
   cd nginx-1.10.0 && \
   ./configure \
-    --with-debug \
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
