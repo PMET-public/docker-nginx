@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM debian:jessie
 MAINTAINER Keith Bentrup <kbentrup@magento.com>
 
 # reference: https://github.com/nginxinc/docker-nginx
